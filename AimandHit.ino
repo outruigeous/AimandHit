@@ -17,6 +17,20 @@ int MID_PIN = 16;
 int btn_up_value = 0;
 int btn_down_value = 0;
 int btn_mid_value = 0;
+// Variables will change:
+int midButtonState;            // the current reading from the input pin
+int midLastButtonState = LOW;  // the previous reading from the input pin
+int upButtonState;            // the current reading from the input pin
+int upLastButtonState = LOW;  // the previous reading from the input pin
+int downButtonState;            // the current reading from the input pin
+int downLastButtonState = LOW;  // the previous reading from the input pin
+
+// the following variables are unsigned longs because the time, measured in
+// milliseconds, will quickly become a bigger number than can be stored in an int.
+unsigned long midLastDebounceTime = 0;  // the last time the output pin was toggled
+unsigned long upLastDebounceTime = 0;  // the last time the output pin was toggled
+unsigned long downLastDebounceTime = 0;  // the last time the output pin was toggled
+unsigned long debounceDelay = 50;    // the debounce time; increase if the output flickers
 // time
 int gameStartTiming = 0;
 int gameOverTiming = 0;
@@ -82,19 +96,80 @@ void gameEngineLoop(){
   }
 }
 
-void readInputs(){
-    btn_up_value = digitalRead(UP_PIN);
-    btn_down_value = digitalRead(DOWN_PIN);
-    btn_mid_value = digitalRead(MID_PIN);
-    Serial.print("pins: ");
-    Serial.print(btn_up_value);
-    Serial.print(" ");
-    Serial.print(btn_down_value);
-    Serial.print(" ");
-    Serial.println(btn_mid_value);
-    delay(20);
-}
+void readInputs() {
+  //   MID PIN
+  btn_mid_value = 0;
+  int reading = digitalRead(MID_PIN);
+  if (reading != midLastButtonState) {
+    midLastDebounceTime = millis();
+  }
+   if ((millis() - midLastDebounceTime) > debounceDelay) {
+    // whatever the reading is at, it's been there for longer than the debounce
+    // delay, so take it as the actual current state:
 
+    // if the button state has changed:
+    if (reading != midButtonState) {
+      midButtonState = reading;
+
+      // only toggle the LED if the new button state is HIGH
+      if (midButtonState == HIGH) {
+        Serial.println("MID!");
+        btn_mid_value = 1;
+      }
+    }
+   }
+     // save the reading. Next time through the loop, it'll be the lastButtonState:
+  midLastButtonState = reading;
+
+  // UP PIN
+  btn_up_value = 0;
+  reading = digitalRead(UP_PIN);
+  if (reading != upLastButtonState) {
+    upLastDebounceTime = millis();
+  }
+   if ((millis() - upLastDebounceTime) > debounceDelay) {
+    // whatever the reading is at, it's been there for longer than the debounce
+    // delay, so take it as the actual current state:
+
+    // if the button state has changed:
+    if (reading != upButtonState) {
+      upButtonState = reading;
+
+      // only toggle the LED if the new button state is HIGH
+      if (upButtonState == HIGH) {
+        Serial.println("UP!");
+        btn_up_value = 1;
+      }
+    }
+   }
+     // save the reading. Next time through the loop, it'll be the lastButtonState:
+  upLastButtonState = reading;
+
+  // DOWN PIN
+  btn_down_value = 0;
+  reading = digitalRead(DOWN_PIN);
+  if (reading != downLastButtonState) {
+    downLastDebounceTime = millis();
+  }
+   if ((millis() - downLastDebounceTime) > debounceDelay) {
+    // whatever the reading is at, it's been there for longer than the debounce
+    // delay, so take it as the actual current state:
+
+    // if the button state has changed:
+    if (reading != downButtonState) {
+      downButtonState = reading;
+
+      // only toggle the LED if the new button state is HIGH
+      if (downButtonState == HIGH) {
+        Serial.println("DOWN!");
+        btn_down_value = 1;
+      }
+    }
+   }
+     // save the reading. Next time through the loop, it'll be the lastButtonState:
+  downLastButtonState = reading;
+
+}
 void homeScreen(){
   display.clearDisplay();
   display.setTextSize(2);
@@ -171,6 +246,6 @@ void gameDurationScreen(){
   display.setCursor(0, 0);
   display.println("You took");
   display.print(String(elapsedTiming));  
-  display.print("seconds");
+  display.print(" seconds");
   display.display();
 }
