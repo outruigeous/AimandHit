@@ -317,7 +317,7 @@ void deleteTarget(int i){
 
 void gameScreen(){
   display.clearDisplay();
-  display.drawPixel(playerCoordinates[0], playerCoordinates[1], WHITE);
+  display.fillCircle(playerCoordinates[0], playerCoordinates[1], 2, WHITE);
    for (int i = 0; i < 20; i++) {
     display.drawPixel(targetCoordinates[i][0], targetCoordinates[i][1], WHITE);
    }
@@ -350,7 +350,7 @@ void gameScreen(){
 }
 
 bool collidingCoordinates(int i){
-  return abs(playerCoordinates[0] - targetCoordinates[i][0]) <=1 && abs(playerCoordinates[1] - targetCoordinates[i][1]) <=1; // check if playerCoordinates - targetCoordinates is within the range of +/- 1
+  return abs(playerCoordinates[0] - targetCoordinates[i][0]) <= 2 && abs(playerCoordinates[1] - targetCoordinates[i][1]) <= 2; // check if playerCoordinates - targetCoordinates is within the range of +/- 1
 }
 
 bool targetIsDeleted(int i){ // i represents the "i" target that is deleted
@@ -379,6 +379,7 @@ void gameDurationScreen(){
   display.println("You took");
   display.print(String(elapsedTiming));  
   display.println(" seconds");
+  display.println(" ");
   display.println("<BACK>");
   display.display();
 
