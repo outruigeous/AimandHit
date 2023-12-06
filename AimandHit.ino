@@ -26,8 +26,7 @@ int upLastButtonState = LOW;  // the previous reading from the input pin
 int downButtonState;            // the current reading from the input pin
 int downLastButtonState = LOW;  // the previous reading from the input pin
 
-// the following variables are unsigned longs because the time, measured in
-// milliseconds, will quickly become a bigger number than can be stored in an int.
+
 unsigned long midLastDebounceTime = 0;  // the last time the output pin was toggled
 unsigned long upLastDebounceTime = 0;  // the last time the output pin was toggled
 unsigned long downLastDebounceTime = 0;  // the last time the output pin was toggled
@@ -107,29 +106,13 @@ void setup() {
 }
 
 void loop() {
-  //To-do
-  // press button to go to level selection screen
-  // display "Level 1 (10)/ Level 2 (15)", user selects with joystick
-  // display target pixels at random on OLED screen + the number of targets that are hit
-  // arduino to read X-Y axis angle data from i2c 
-  // show time taken
+
   readInputs();
   readGyrometer();
   printAngle();
   gameEngineLoop();  
   delay(10);
-  // Serial.print("Value of the UP Pin: ");
-  // Serial.print(btn_up_value);
 
-  // Serial.print("Value of the DOWN Pin: ");
-  // Serial.println(btn_down_value);
-
-  // delay(10);
-  // // OLED stuff
-  // display.drawPixel(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, WHITE);
-  // display.display();
-
-  // delay(10);
 }
 
 void gameEngineLoop(){
